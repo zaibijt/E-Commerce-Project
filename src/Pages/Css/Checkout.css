@@ -1,0 +1,171 @@
+.checkout {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  font-family: "Poppins", sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.checkout-form h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.delivery-options {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.delivery-options .option {
+  flex: 1;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.delivery-options .option:hover {
+  border-color: #000;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-terms {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.form-terms input {
+  margin-right: 10px;
+}
+
+.checkout-btn {
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.checkout-btn:hover {
+  background-color: #333;
+}
+
+/* ============================= */
+/* RESPONSIVE DESIGN STARTS HERE */
+/* ============================= */
+
+/* Medium screens (Tablets) */
+@media (max-width: 992px) {
+  .checkout {
+    max-width: 90%;
+    padding: 25px;
+  }
+
+  .checkout h1 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .checkout-form h3 {
+    text-align: center;
+  }
+
+  .delivery-options {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-row .form-group {
+    width: 100%;
+  }
+}
+
+/* Small screens (Mobiles) */
+@media (max-width: 576px) {
+  .checkout {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .checkout h1 {
+    font-size: 22px;
+  }
+
+  .delivery-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .delivery-options .option {
+    margin: 5px 0;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-terms {
+    font-size: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkout-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
