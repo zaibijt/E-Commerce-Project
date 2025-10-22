@@ -10,18 +10,20 @@
 
 .cartitems-format-main {
   display: grid;
-  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 2.5fr 1fr 0.8fr 1.5fr 1fr 0.8fr; 
   align-items: center;
-  gap: 75px;
+  gap: 30px;
   padding: 20px 0;
   color: #454545;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cartitems-format {
-  font-size: 17px;
-  font-weight: 500;
+  display: grid;
+  grid-template-columns: 1fr 2.5fr 1fr 0.8fr 1.5fr 1fr 0.8fr; 
+  align-items: center;
+  gap: 30px;
 }
 
 .carticon-product-icon {

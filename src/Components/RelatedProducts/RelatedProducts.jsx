@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./RelatedProducts.css";
 import Item from "../Item/Item";
-import localData from "../Assests/data"; // fallback data
+import localData from "../Assests/data"; 
 
 const RelatedProducts = () => {
   const [products, setProducts] = useState([]);
@@ -13,17 +13,30 @@ const RelatedProducts = () => {
         if (!res.ok) throw new Error("Network response was not ok");
         const data = await res.json();
 
-        const formattedData = data.map((item) => ({
-          id: item.id,
-          name: item.title,
-          image: item.images?.[0] || "",
-          images: item.images || [],
-          description: item.description,
-          category: item.category?.name || "Uncategorized",
-          price: item.price,
-          new_price: item.price,
-          old_price: (item.price * 1.2).toFixed(2),
-        }));
+        const formattedData = data.map((item) => {
+          //Fix image domain issue + fallback if empty
+          let imageUrl = item.images?.[0] || "";
+          if (
+            imageUrl.includes("placeimg.com") ||
+            imageUrl.includes("placehold.co") ||
+            !imageUrl
+          ) {
+            // use a reliable placeholder image
+            imageUrl = `https://picsum.photos/seed/${item.id}/400/400`;
+          }
+
+          return {
+            id: item.id,
+            name: item.title,
+            image: imageUrl,
+            images: item.images || [],
+            description: item.description,
+            category: item.category?.name || "Uncategorized",
+            price: item.price,
+            new_price: item.price,
+            old_price: (item.price * 1.2).toFixed(2),
+          };
+        });
 
         setProducts(formattedData);
       } catch (error) {

@@ -18,60 +18,87 @@ const ShopContextProvider = (props) => {
   const addToCart = (product) => {
     if (!product || !product.id) return;
 
-    const id = Number(product.id);
+    // ✅ Include selected size in key (fallback to 'default')
+    const sizeKey = product.selectedSize || "default";
+    const uniqueKey = `${Number(product.id)}-${sizeKey}`;
 
     // Step 1: Prevent double clicks or duplicate state updates
     setCartItems((prev) => {
-      const newCart = { ...prev, [id]: (prev[id] || 0) + 1 };
+      const newCart = { ...prev, [uniqueKey]: (prev[uniqueKey] || 0) + 1 };
       return newCart;
     });
 
-    // Step 2: Only add product info once
+    // Step 2: Only add product info once (per unique ID + size)
     setExtraProducts((prev) => {
-      const alreadyExists = prev.some((p) => Number(p.id) === id);
+      const alreadyExists = prev.some(
+        (p) => `${Number(p.id)}-${p.selectedSize || "default"}` === uniqueKey
+      );
       if (!alreadyExists) {
-        console.log(" Added new product to extraProducts:", product.title || product.name);
-        return [...prev, product];
+        console.log(
+          " Added new product to extraProducts:",
+          product.title || product.name,
+          "with size:",
+          sizeKey
+        );
+        return [...prev, { ...product, selectedSize: sizeKey }];
       } else {
-        console.log("⚠️ Product already exists in extraProducts:", product.title || product.name);
+        console.log(
+          " Product already exists in extraProducts:",
+          product.title || product.name,
+          "with size:",
+          sizeKey
+        );
         return prev;
       }
     });
   };
 
   // Remove from cart
-  const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({
-      ...prev,
-      [itemId]: Math.max((prev[itemId] || 1) - 1, 0),
-    }));
-  };
+  const removeFromCart = (itemId, size = "default") => {
+  const uniqueKey = `${itemId}-${size}`;
+  setCartItems((prev) => {
+    const updated = { ...prev };
+    delete updated[uniqueKey]; // 👈 poora product remove kar do
+    return updated;
+  });
+};
 
   //  Increase quantity
-  const increaseQuantity = (itemId) => {
+  const increaseQuantity = (itemId, size = "default") => {
+    const uniqueKey = `${itemId}-${size}`;
     setCartItems((prev) => ({
       ...prev,
-      [itemId]: (prev[itemId] || 0) + 1,
+      [uniqueKey]: (prev[uniqueKey] || 0) + 1,
     }));
   };
 
   //  Decrease quantity
-  const decreaseQuantity = (itemId) => {
-    setCartItems((prev) => ({
-      ...prev,
-      [itemId]: prev[itemId] > 1 ? prev[itemId] - 1 : 1,
-    }));
+  const decreaseQuantity = (itemId, size = "default") => {
+    const uniqueKey = `${itemId}-${size}`;
+    setCartItems((prev) => {
+      const updated = { ...prev };
+      if (updated[uniqueKey] > 1) {
+        updated[uniqueKey] -= 1;
+      } else {
+        delete updated[uniqueKey];
+      }
+      return updated;
+    });
   };
 
   //  Get total cart amount
   const getTotalCartAmount = () => {
     let totalAmount = 0;
     const allData = [...all_product, ...extraProducts];
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        const itemInfo = allData.find((p) => Number(p.id) === Number(item));
+    for (const key in cartItems) {
+      if (cartItems[key] > 0) {
+        const [id, size] = key.split("-");
+        const itemInfo = allData.find(
+          (p) => String(p.id) === id && (p.selectedSize || "default") === size
+        );
         if (itemInfo) {
-          totalAmount += (itemInfo.new_price || itemInfo.price || 0) * cartItems[item];
+          totalAmount +=
+            (itemInfo.new_price || itemInfo.price || 0) * cartItems[key];
         }
       }
     }
@@ -81,9 +108,9 @@ const ShopContextProvider = (props) => {
   //  Get total cart items
   const getTotalCartItems = () => {
     let totalItem = 0;
-    for (let item in cartItems) {
-      if (cartItems[item] > 0) {
-        totalItem += cartItems[item];
+    for (let key in cartItems) {
+      if (cartItems[key] > 0) {
+        totalItem += cartItems[key];
       }
     }
     return totalItem;
@@ -93,21 +120,24 @@ const ShopContextProvider = (props) => {
   const getCartProducts = () => {
     const allCombined = [...all_product, ...extraProducts];
 
-    //  Remove duplicates (same ID) - API product preferred
+    //  Remove duplicates (same ID + size) - API product preferred
     const uniqueProducts = [];
-    const seenIds = new Set();
+    const seenKeys = new Set();
 
     for (let i = allCombined.length - 1; i >= 0; i--) {
       const p = allCombined[i];
-      if (!seenIds.has(Number(p.id))) {
-        seenIds.add(Number(p.id));
+      const key = `${Number(p.id)}-${p.selectedSize || "default"}`;
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
         uniqueProducts.unshift(p);
       }
     }
 
     // Return only products that are in cart
     const filtered = uniqueProducts.filter(
-      (product) => cartItems[Number(product.id)] > 0
+      (product) =>
+        cartItems[`${Number(product.id)}-${product.selectedSize || "default"}`] >
+        0
     );
 
     return filtered;

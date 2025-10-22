@@ -13,7 +13,6 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      {/* Logo */}
       <div className="nav-logo">
         <img src={logo} alt="logo" />
         <p>Shopper</p>
@@ -46,12 +45,26 @@ const Navbar = () => {
         </li>
       </ul>
 
-      {/* Desktop Right Section */}
       <div className="nav-login-cart">
-        <Link to="/login">
+        {/* ✅ Login click par red line remove ho jaye */}
+        <Link
+          to="/login"
+          onClick={() => {
+            setMenu(""); // red line hide
+            setIsOpen(false); // close mobile menu if open
+          }}
+        >
           <button>Login</button>
         </Link>
-        <Link to="/cart">
+
+        {/* ✅ Cart click par red line remove ho jaye */}
+        <Link
+          to="/cart"
+          onClick={() => {
+            setMenu("");
+            setIsOpen(false);
+          }}
+        >
           <div className="nav-cart">
             <img src={cart_icon} alt="cart" />
             <div className="nav-cart-count">{getTotalCartItems()}</div>
@@ -59,12 +72,10 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Toggle Button */}
       <div className="nav-toggle" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes size={25} /> : <FaBars size={25} />}
       </div>
 
-      {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="mobile-menu">
           <ul>
@@ -95,10 +106,25 @@ const Navbar = () => {
           </ul>
 
           <div className="mobile-login-cart">
-            <Link to="/login" onClick={() => setIsOpen(false)}>
+            {/* ✅ Mobile Login par bhi red line remove ho */}
+            <Link
+              to="/login"
+              onClick={() => {
+                setMenu("");
+                setIsOpen(false);
+              }}
+            >
               <button>Login</button>
             </Link>
-            <Link to="/cart" onClick={() => setIsOpen(false)}>
+
+            {/* ✅ Mobile Cart click par bhi red line remove ho */}
+            <Link
+              to="/cart"
+              onClick={() => {
+                setMenu("");
+                setIsOpen(false);
+              }}
+            >
               <div className="nav-cart">
                 <img src={cart_icon} alt="cart" />
                 <div className="nav-cart-count">{getTotalCartItems()}</div>

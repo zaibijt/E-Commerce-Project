@@ -2,11 +2,10 @@ import React, { useContext } from 'react';
 import './CartItems.css';
 import { ShopContext } from "../../Context/ShopContext";
 import remove_icon from '../Assests/cart_cross_icon.png';
-import { useNavigate } from 'react-router-dom'; // ✅ Added import
+import { useNavigate } from 'react-router-dom';
 
 const CartItems = () => {
   const {
-    all_product,
     cartItems,
     removeFromCart,
     getTotalCartAmount,
@@ -15,7 +14,7 @@ const CartItems = () => {
     getCartProducts,
   } = useContext(ShopContext);
 
-  const navigate = useNavigate(); // ✅ Added navigation hook
+  const navigate = useNavigate();
 
   // Combine local + API products from context
   const allCartProducts = getCartProducts();
@@ -26,6 +25,7 @@ const CartItems = () => {
         <p>Products</p>
         <p>Title</p>
         <p>Price</p>
+        <p>Size</p>
         <p>Quantity</p>
         <p>Total</p>
         <p>Remove</p>
@@ -33,9 +33,13 @@ const CartItems = () => {
       <hr />
 
       {allCartProducts.map((e) => {
-        if (cartItems[e.id] > 0) {
+        const sizeKey = e.selectedSize || "default";
+        const uniqueKey = `${e.id}-${sizeKey}`;
+        const quantity = cartItems[uniqueKey] || 0;
+
+        if (quantity > 0) {
           return (
-            <div key={e.id}>
+            <div key={uniqueKey}>
               <div className="cartitems-format cartitems-format-main">
                 <img
                   src={e.image}
@@ -45,19 +49,21 @@ const CartItems = () => {
                 <p>{e.name}</p>
                 <p>${e.new_price}</p>
 
-                {/* Quantity control */}
+                {/* ✅ SHOW SELECTED SIZE */}
+                <p>{e.selectedSize || "—"}</p>
+
                 <div className="cartitems-quantity-control">
-                  <button onClick={() => decreaseQuantity(e.id)}>-</button>
-                  <span>{cartItems[e.id]}</span>
-                  <button onClick={() => increaseQuantity(e.id)}>+</button>
+                  <button onClick={() => decreaseQuantity(e.id, e.selectedSize)}>-</button>
+                  <span>{quantity}</span>
+                  <button onClick={() => increaseQuantity(e.id, e.selectedSize)}>+</button>
                 </div>
 
-                <p>${(e.new_price * cartItems[e.id]).toFixed(2)}</p>
+                <p>${(e.new_price * quantity).toFixed(2)}</p>
                 <img
                   className='cartitems_remove-icon'
                   src={remove_icon}
                   alt="Remove"
-                  onClick={() => removeFromCart(e.id)}
+                  onClick={() => removeFromCart(e.id, e.selectedSize)}
                 />
               </div>
               <hr />
@@ -86,7 +92,7 @@ const CartItems = () => {
               <h3>${getTotalCartAmount()}</h3>
             </div>
           </div>
-          {/* ✅ Added navigation to checkout */}
+
           <button onClick={() => navigate("/checkout")}>PROCEED TO CHECKOUT</button>
         </div>
 

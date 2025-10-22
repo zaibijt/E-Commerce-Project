@@ -1,13 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import ShopContextProvider from './Context/ShopContext.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { HashRouter } from "react-router-dom"; // ✅ Added for GitHub Pages
+import "./index.css";
+import App from "./App.jsx";
+import ShopContextProvider from "./Context/ShopContext.jsx";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ShopContextProvider>
-      <App />
+      <HashRouter>
+        <App />
+      </HashRouter>
     </ShopContextProvider>
   </StrictMode>
-)
+);
